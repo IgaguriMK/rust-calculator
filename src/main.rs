@@ -1,8 +1,9 @@
-use std::error;
-use std::fmt;
+mod error;
+
 use std::io;
 use std::io::Write;
-use std::result;
+
+use error::Result;
 
 fn main() {
     match calc_expr() {
@@ -31,38 +32,3 @@ fn read_expr() -> Result<String> {
     Ok(line)
 }
 
-
-#[derive(Debug)]
-enum CalcError {
-    Io(io::Error),
-}
-
-type Result<T> = result::Result<T, CalcError>;
-
-impl fmt::Display for CalcError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match *self {
-            CalcError::Io(ref err) => write!(f, "IO error:{}", err),
-        }
-    }
-}
-
-impl error::Error for CalcError {
-    fn description(&self) -> &str {
-        match *self {
-            CalcError::Io(ref err) => err.description(),
-        }
-    }
-
-    fn cause(&self) -> Option<&error::Error> {
-        match *self {
-            CalcError::Io(ref err) => Some(err),
-        }
-    }
-}
-
-impl From<io::Error> for CalcError {
-    fn from(err: io::Error) -> CalcError {
-        CalcError::Io(err)
-    }
-}
