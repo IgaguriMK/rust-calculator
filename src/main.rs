@@ -16,14 +16,14 @@ fn calc_expr() -> Result<()> {
     print!("Input expr:");
     io::stdout().flush()?;
 
-    let line = read_expr()?;
+    let line = read_line()?;
 
     println!("bytes:{}", line);
 
     Ok(())
 }
 
-fn read_expr() -> Result<String> {
+fn read_line() -> Result<String> {
     let stdin = io::stdin();
     
     let mut line = String::new();
