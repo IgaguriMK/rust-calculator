@@ -18,7 +18,7 @@ pub fn parse_add(mut str: String) -> Expression {
             let right = Box::new(parse_add(tail));
             Expression::Add(left, right)
         },
-        None =>Expression::Dummy(String::from(str))
+        None =>Expression::Dummy(str)
     }
 }
 
