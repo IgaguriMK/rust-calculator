@@ -1,4 +1,5 @@
 mod error;
+mod expression;
 
 use std::io;
 use std::io::Write;
@@ -16,9 +17,12 @@ fn calc_expr() -> Result<()> {
     print!("Input expr:");
     io::stdout().flush()?;
 
-    let line = read_line()?;
+    let mut line = read_line()?;
+    line.pop();
 
-    println!("bytes:{}", line);
+    let expr = expression::parse_add(line);
+
+    println!("bytes:{:?}", expr);
 
     Ok(())
 }
