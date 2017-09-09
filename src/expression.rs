@@ -1,39 +1,98 @@
+use error::Result;
+use regex::Regex;
+use std::vec::Vec;
 
 #[derive(Debug)]
 pub enum Expression {
     //Value(i64),
-    Add(Box<Expression>, Box<Expression>),
+    //Add(Box<Expression>, Box<Expression>),
     //Mul(Box<Expression>, Box<Expression>),
     Dummy(String),
 }
 
-pub fn parse_expr(str: &str) -> Expression {
-    
 
-    Expression::Dummy("".to_string())
+lazy_static! {
+    static ref REG_NUMBER: Regex = {
+        Regex::new(r"^[0-9]+").unwrap()
+    };
+
+    static ref REG_PLUS: Regex = {
+        Regex::new(r"^\+").unwrap()
+    };
+
+    static ref REG_SPACE: Regex = {
+        Regex::new(r"^[ \t]+").unwrap()
+    };
 }
 
-pub fn parse_add(mut str: String) -> Expression {
 
-    match find_char(&str) {
-        Some(i) => {
-            let tail = str.split_off(i + 1);
-            str.pop();
+pub fn parse_expr(str: &str) -> Result<Expression> {
 
-            let left = Box::new(Expression::Dummy(str));
-            let right = Box::new(parse_add(tail));
-            Expression::Add(left, right)
+    let tokens = parse_token(str);
+
+    println!("Tokens: {:?}", tokens);
+
+    Ok(Expression::Dummy(str.to_string()))
+}
+
+
+#[derive(Debug)]
+enum Token {
+    Number(i64),
+    Plus,
+}
+
+fn parse_token(str: &str) -> Vec<Token> {
+    let mut tokens: Vec<Token> = Vec::new();
+    let mut str_left = str;
+    let mut pos = 0;
+
+    loop {
+        str_left = str_left.trim();
+
+        if str_left == "" {
+            return tokens;
         }
-        None => Expression::Dummy(str),
+
+        if let Some(mat) = REG_NUMBER.find(str_left) {
+            let mat_str = mat.as_str();
+            pos += mat_str.len();
+
+            let val = mat_str.parse::<i64>().unwrap();
+            tokens.push(Token::Number(val));
+
+            str_left = str_tail_at(str_left, mat.end());
+
+        } else if let Some(mat) = REG_PLUS.find(str_left) {
+            let mat_str = mat.as_str();
+            pos += mat_str.len();
+
+            tokens.push(Token::Plus);
+
+            str_left = str_tail_at(str_left, mat.end());
+            
+        } else if let Some(mat) = REG_SPACE.find(str_left) {
+            let mat_str = mat.as_str();
+            pos += mat_str.len();
+
+            str_left = str_tail_at(str_left, mat.end());
+
+        } else {
+            let filler = String::from_utf8(vec![b' '; pos]).unwrap();
+
+            println!("\nParse error occer!");
+            println!("Input: \"{}\"", str);
+            println!("        {}^ Invalid token here", filler);
+            panic!("Invalid token");
+        }
     }
 }
 
-fn find_char(str: &String) -> Option<usize> {
-    for (i, ch) in str.chars().enumerate() {
-        if ch == '+' {
-            return Option::Some(i);
-        }
+fn str_tail_at(str: &str, at: usize) -> &str {
+    if at < str.len() {
+        &str[at..]
+    } else {
+        ""
     }
-
-    Option::None
 }
+
