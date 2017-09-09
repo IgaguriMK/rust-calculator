@@ -37,4 +37,3 @@ impl From<io::Error> for CalcError {
         CalcError::Io(err)
     }
 }
-

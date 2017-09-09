@@ -29,10 +29,9 @@ fn calc_expr() -> Result<()> {
 
 fn read_line() -> Result<String> {
     let stdin = io::stdin();
-    
+
     let mut line = String::new();
     stdin.read_line(&mut line)?;
 
     Ok(line)
 }
-

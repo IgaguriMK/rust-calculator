@@ -11,14 +11,14 @@ pub fn parse_add(mut str: String) -> Expression {
 
     match find_char(&str) {
         Some(i) => {
-            let tail = str.split_off(i+1);
+            let tail = str.split_off(i + 1);
             str.pop();
-            
+
             let left = Box::new(Expression::Dummy(str));
             let right = Box::new(parse_add(tail));
             Expression::Add(left, right)
-        },
-        None =>Expression::Dummy(str)
+        }
+        None => Expression::Dummy(str),
     }
 }
 
