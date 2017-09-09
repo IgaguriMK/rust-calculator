@@ -7,6 +7,12 @@ pub enum Expression {
     Dummy(String),
 }
 
+pub fn parse_expr(str: &str) -> Expression {
+    
+
+    Expression::Dummy("".to_string())
+}
+
 pub fn parse_add(mut str: String) -> Expression {
 
     match find_char(&str) {

@@ -20,7 +20,7 @@ fn calc_expr() -> Result<()> {
     let mut line = read_line()?;
     line.pop();
 
-    let expr = expression::parse_add(line);
+    let expr = expression::parse_expr(&line);
 
     println!("bytes:{:?}", expr);
 
