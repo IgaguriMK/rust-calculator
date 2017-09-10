@@ -1,7 +1,7 @@
 use regex::Regex;
 use std::vec::Vec;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Token {
     Number(i64),
     Plus,
@@ -75,3 +75,44 @@ fn str_tail_at(str: &str, at: usize) -> &str {
     }
 }
 
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parse_token_number_1() {
+        let tokens = parse_token("1");
+        assert_eq!(tokens, vec![Token::Number(1)]);
+    }
+
+    #[test]
+    fn parse_token_number_max() {
+        let tokens = parse_token("9223372036854775807");
+        assert_eq!(tokens, vec![Token::Number(9223372036854775807)]);
+    }
+
+    #[test]
+    fn parse_token_add() {
+        let tokens = parse_token("+");
+        assert_eq!(tokens, vec![Token::Plus]);
+    }
+
+    #[test]
+    #[should_panic(expected = "Invalid token")]
+    fn parse_token_invalid() {
+        parse_token("?");
+    }
+
+    #[test]
+    fn parse_token_add_expr() {
+        let tokens = parse_token("1+2");
+        assert_eq!(tokens, vec![Token::Number(1), Token::Plus, Token::Number(2)]);
+    }
+
+    #[test]
+    fn parse_token_with_spaces() {
+        let tokens = parse_token(" 1  + 2 ");
+        assert_eq!(tokens, vec![Token::Number(1), Token::Plus, Token::Number(2)]);
+    }
+}
