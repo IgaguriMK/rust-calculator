@@ -115,4 +115,29 @@ mod tests {
         let tokens = parse_token(" 1  + 2 ");
         assert_eq!(tokens, vec![Token::Number(1), Token::Plus, Token::Number(2)]);
     }
+
+
+    #[test]
+    fn str_tail_at_0() {
+        let cut = str_tail_at("abc", 0);
+        assert_eq!(cut, "abc");
+    }
+
+    #[test]
+    fn str_tail_at_1() {
+        let cut = str_tail_at("abc", 1);
+        assert_eq!(cut, "bc");
+    }
+
+    #[test]
+    fn str_tail_at_tail() {
+        let cut = str_tail_at("abc", 3);
+        assert_eq!(cut, "");
+    }
+
+    #[test]
+    fn str_tail_at_over_tail() {
+        let cut = str_tail_at("abc", 4);
+        assert_eq!(cut, "");
+    }
 }
