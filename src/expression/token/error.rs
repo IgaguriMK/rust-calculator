@@ -1,5 +1,4 @@
 use std::error;
-use std::io;
 use std::fmt;
 use std::result;
 
@@ -13,9 +12,9 @@ impl TokenError {
         let filler = String::from_utf8(vec![b' '; at]).unwrap();
 
         let mut s = String::new();
-        s = s + &format!("\nParse error occered!\n");
-        s = s + &format!("Input: \"{}\"\n", source);
-        s = s + &format!("    {}^ Invalid token here\n", filler);
+        s = s + &format!("トークン化できない入力が検出されました。\n");
+        s = s + &format!("入力: \"{}\"\n", source);
+        s = s + &format!("       {}^ 不正な文字\n", filler);
         TokenError::InvalidChar(s)
     }
 

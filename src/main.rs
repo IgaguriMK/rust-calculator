@@ -22,7 +22,7 @@ fn main() {
 }
 
 fn calc_expr() -> Result<()> {
-    print!("Input expr:");
+    print!("数式:");
     io::stdout().flush()?;
 
     let mut line = read_line()?;
