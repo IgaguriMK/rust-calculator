@@ -10,13 +10,67 @@ use expression::token::error::TokenResult;
 pub enum Token {
     Number(i64),
     Plus,
-    Sub,
-    Mult,
-    Div,
-    Mod,
+    Hyphen,
+    Asterisk,
+    Slash,
+    Percent,
     OpenParen,
     CloseParen,
 }
+
+#[derive(Debug, PartialEq)]
+pub enum TokenType {
+    Number,
+    Operator,
+    Paren,
+}
+
+#[derive(Debug, PartialEq)]
+pub enum Associativity {
+    Left,
+    Right,
+    Non,
+}
+
+impl Token { 
+    pub fn priority(&self) -> Option<u8> {
+        match *self {
+            Token::Plus => Some(1),
+            Token::Hyphen => Some(1),
+            Token::Asterisk => Some(3),
+            Token::Hyphen => Some(3),
+            Token::Percent => Some(2),
+            _ => None,
+        }
+    }
+
+    pub fn token_type(&self) -> TokenType {
+        match *self {
+            Token::Number(_)  => TokenType::Number,
+            Token::Plus       => TokenType::Operator,
+            Token::Hyphen     => TokenType::Operator,
+            Token::Asterisk   => TokenType::Operator,
+            Token::Slash      => TokenType::Operator,
+            Token::Percent    => TokenType::Operator,
+            Token::OpenParen  => TokenType::Paren,
+            Token::CloseParen => TokenType::Paren,
+        }
+    }
+
+    pub fn associativity(&self) -> Option<Associativity> {
+        match *self {
+            Token::Number(_)  => None,
+            Token::Plus       => Some(Associativity::Left),
+            Token::Hyphen     => Some(Associativity::Left),
+            Token::Asterisk   => Some(Associativity::Left),
+            Token::Slash      => Some(Associativity::Left),
+            Token::Percent    => Some(Associativity::Left),
+            Token::OpenParen  => None,
+            Token::CloseParen => None,
+        }
+    }
+}
+
 
 lazy_static! {
     static ref REG_SPACE: Regex = {
@@ -104,7 +158,7 @@ pub fn parse_token(str: &str) -> TokenResult<Vec<Token>> {
             let mat_str = mat.as_str();
             pos += mat_str.len();
 
-            tokens.push(Token::Sub);
+            tokens.push(Token::Hyphen);
 
             str_left = str_tail_at(str_left, mat.end());
             
@@ -112,7 +166,7 @@ pub fn parse_token(str: &str) -> TokenResult<Vec<Token>> {
             let mat_str = mat.as_str();
             pos += mat_str.len();
 
-            tokens.push(Token::Mult);
+            tokens.push(Token::Asterisk);
 
             str_left = str_tail_at(str_left, mat.end());
             
@@ -120,7 +174,7 @@ pub fn parse_token(str: &str) -> TokenResult<Vec<Token>> {
             let mat_str = mat.as_str();
             pos += mat_str.len();
 
-            tokens.push(Token::Div);
+            tokens.push(Token::Slash);
 
             str_left = str_tail_at(str_left, mat.end());
             
@@ -128,7 +182,7 @@ pub fn parse_token(str: &str) -> TokenResult<Vec<Token>> {
             let mat_str = mat.as_str();
             pos += mat_str.len();
 
-            tokens.push(Token::Mod);
+            tokens.push(Token::Percent);
 
             str_left = str_tail_at(str_left, mat.end());
             
@@ -222,7 +276,7 @@ mod tests {
         let tokens = parse_token("-");
         
         let tokens = tokens.expect("Test returns Err().");
-        assert_eq!(tokens, vec![Token::Sub]);
+        assert_eq!(tokens, vec![Token::Hyphen]);
     }
 
     #[test]
@@ -230,7 +284,7 @@ mod tests {
         let tokens = parse_token("*");
         
         let tokens = tokens.expect("Test returns Err().");
-        assert_eq!(tokens, vec![Token::Mult]);
+        assert_eq!(tokens, vec![Token::Asterisk]);
     }
 
     #[test]
@@ -238,7 +292,7 @@ mod tests {
         let tokens = parse_token("/");
         
         let tokens = tokens.expect("Test returns Err().");
-        assert_eq!(tokens, vec![Token::Div]);
+        assert_eq!(tokens, vec![Token::Slash]);
     }
 
     #[test]
@@ -246,7 +300,7 @@ mod tests {
         let tokens = parse_token("%");
         
         let tokens = tokens.expect("Test returns Err().");
-        assert_eq!(tokens, vec![Token::Mod]);
+        assert_eq!(tokens, vec![Token::Percent]);
     }
 
     #[test]
@@ -305,7 +359,7 @@ mod tests {
                     Token::Plus,
                     Token::Number(3),
                     Token::CloseParen,
-                    Token::Mod,
+                    Token::Percent,
                     Token::Number(-6),
                 ]);
     }
