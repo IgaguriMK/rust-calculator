@@ -17,6 +17,10 @@ lazy_static! {
         Regex::new(r"^[0-9]+").unwrap()
     };
 
+    static ref REG_NEG_NUMBER: Regex = {
+        Regex::new(r"^\(-[0-9]+\)").unwrap()
+    };
+
     static ref REG_PLUS: Regex = {
         Regex::new(r"^\+").unwrap()
     };
@@ -41,6 +45,17 @@ pub fn parse_token(str: &str) -> TokenResult<Vec<Token>> {
         if let Some(mat) = REG_NUMBER.find(str_left) {
             let mat_str = mat.as_str();
             pos += mat_str.len();
+
+            let val = mat_str.parse::<i64>().unwrap();
+            tokens.push(Token::Number(val));
+
+            str_left = str_tail_at(str_left, mat.end());
+
+        }else if let Some(mat) = REG_NEG_NUMBER.find(str_left) {
+            let mat_str = mat.as_str();
+            pos += mat_str.len();
+
+            let mat_str = &mat_str[1 .. (mat_str.len() - 1)];
 
             let val = mat_str.parse::<i64>().unwrap();
             tokens.push(Token::Number(val));
@@ -91,11 +106,27 @@ mod tests {
     }
 
     #[test]
+    fn parse_token_number_neg_1() {
+        let tokens = parse_token("(-1)");
+        
+        let tokens = tokens.expect("Test returns Err().");
+        assert_eq!(tokens, vec![Token::Number(-1)]);
+    }
+
+    #[test]
     fn parse_token_number_max() {
         let tokens = parse_token("9223372036854775807");
         
         let tokens = tokens.expect("Test returns Err().");
         assert_eq!(tokens, vec![Token::Number(9223372036854775807)]);
+    }
+
+    #[test]
+    fn parse_token_number_min() {
+        let tokens = parse_token("(-9223372036854775808)");
+        
+        let tokens = tokens.expect("Test returns Err().");
+        assert_eq!(tokens, vec![Token::Number(-9223372036854775808)]);
     }
 
     #[test]
