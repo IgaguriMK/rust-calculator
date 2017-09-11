@@ -10,9 +10,19 @@ use expression::token::error::TokenResult;
 pub enum Token {
     Number(i64),
     Plus,
+    Sub,
+    Mult,
+    Div,
+    Mod,
+    OpenParen,
+    CloseParen,
 }
 
 lazy_static! {
+    static ref REG_SPACE: Regex = {
+        Regex::new(r"^[ \t]+").unwrap()
+    };
+
     static ref REG_NUMBER: Regex = {
         Regex::new(r"^[0-9]+").unwrap()
     };
@@ -25,8 +35,28 @@ lazy_static! {
         Regex::new(r"^\+").unwrap()
     };
 
-    static ref REG_SPACE: Regex = {
-        Regex::new(r"^[ \t]+").unwrap()
+    static ref REG_SUB: Regex = {
+        Regex::new(r"^-").unwrap()
+    };
+
+    static ref REG_MULT: Regex = {
+        Regex::new(r"^\*").unwrap()
+    };
+
+    static ref REG_DIV: Regex = {
+        Regex::new(r"^/").unwrap()
+    };
+
+    static ref REG_MOD: Regex = {
+        Regex::new(r"^%").unwrap()
+    };
+
+    static ref REG_OPEN_PAREN: Regex = {
+        Regex::new(r"^\(").unwrap()
+    };
+
+    static ref REG_CLOSE_PAREN: Regex = {
+        Regex::new(r"^\)").unwrap()
     };
 }
 
@@ -70,6 +100,54 @@ pub fn parse_token(str: &str) -> TokenResult<Vec<Token>> {
 
             str_left = str_tail_at(str_left, mat.end());
             
+        } else if let Some(mat) = REG_SUB.find(str_left) {
+            let mat_str = mat.as_str();
+            pos += mat_str.len();
+
+            tokens.push(Token::Sub);
+
+            str_left = str_tail_at(str_left, mat.end());
+            
+        } else if let Some(mat) = REG_MULT.find(str_left) {
+            let mat_str = mat.as_str();
+            pos += mat_str.len();
+
+            tokens.push(Token::Mult);
+
+            str_left = str_tail_at(str_left, mat.end());
+            
+        } else if let Some(mat) = REG_DIV.find(str_left) {
+            let mat_str = mat.as_str();
+            pos += mat_str.len();
+
+            tokens.push(Token::Div);
+
+            str_left = str_tail_at(str_left, mat.end());
+            
+        } else if let Some(mat) = REG_MOD.find(str_left) {
+            let mat_str = mat.as_str();
+            pos += mat_str.len();
+
+            tokens.push(Token::Mod);
+
+            str_left = str_tail_at(str_left, mat.end());
+            
+        } else if let Some(mat) = REG_OPEN_PAREN.find(str_left) {
+            let mat_str = mat.as_str();
+            pos += mat_str.len();
+
+            tokens.push(Token::OpenParen);
+
+            str_left = str_tail_at(str_left, mat.end());
+            
+        } else if let Some(mat) = REG_CLOSE_PAREN.find(str_left) {
+            let mat_str = mat.as_str();
+            pos += mat_str.len();
+
+            tokens.push(Token::CloseParen);
+
+            str_left = str_tail_at(str_left, mat.end());
+            
         } else if let Some(mat) = REG_SPACE.find(str_left) {
             let mat_str = mat.as_str();
             pos += mat_str.len();
@@ -96,6 +174,8 @@ fn str_tail_at(str: &str, at: usize) -> &str {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    //// parse_token ////
 
     #[test]
     fn parse_token_number_1() {
@@ -138,6 +218,54 @@ mod tests {
     }
 
     #[test]
+    fn parse_token_sub() {
+        let tokens = parse_token("-");
+        
+        let tokens = tokens.expect("Test returns Err().");
+        assert_eq!(tokens, vec![Token::Sub]);
+    }
+
+    #[test]
+    fn parse_token_mult() {
+        let tokens = parse_token("*");
+        
+        let tokens = tokens.expect("Test returns Err().");
+        assert_eq!(tokens, vec![Token::Mult]);
+    }
+
+    #[test]
+    fn parse_token_div() {
+        let tokens = parse_token("/");
+        
+        let tokens = tokens.expect("Test returns Err().");
+        assert_eq!(tokens, vec![Token::Div]);
+    }
+
+    #[test]
+    fn parse_token_mod() {
+        let tokens = parse_token("%");
+        
+        let tokens = tokens.expect("Test returns Err().");
+        assert_eq!(tokens, vec![Token::Mod]);
+    }
+
+    #[test]
+    fn parse_token_open_paren() {
+        let tokens = parse_token("(");
+        
+        let tokens = tokens.expect("Test returns Err().");
+        assert_eq!(tokens, vec![Token::OpenParen]);
+    }
+
+    #[test]
+    fn parse_token_close_paren() {
+        let tokens = parse_token(")");
+        
+        let tokens = tokens.expect("Test returns Err().");
+        assert_eq!(tokens, vec![Token::CloseParen]);
+    }
+
+    #[test]
     fn parse_token_invalid() {
         let result = parse_token("?");
         
@@ -165,6 +293,24 @@ mod tests {
         assert_eq!(tokens, vec![Token::Number(1), Token::Plus, Token::Number(2)]);
     }
 
+    #[test]
+    fn parse_token_complex_1() {
+        let tokens = parse_token("(1 + 3) %(-6)");
+        
+        let tokens = tokens.expect("Test returns Err().");
+        assert_eq!(tokens, 
+                vec![
+                    Token::OpenParen,
+                    Token::Number(1),
+                    Token::Plus,
+                    Token::Number(3),
+                    Token::CloseParen,
+                    Token::Mod,
+                    Token::Number(-6),
+                ]);
+    }
+
+    //// str_tail ////
 
     #[test]
     fn str_tail_at_0() {
