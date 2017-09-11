@@ -1,5 +1,9 @@
+pub mod error;
+
 use regex::Regex;
 use std::vec::Vec;
+
+use expression::token::error::TokenResult;
 
 #[derive(Debug, PartialEq)]
 pub enum Token {
