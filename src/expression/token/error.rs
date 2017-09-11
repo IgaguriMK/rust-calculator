@@ -9,7 +9,7 @@ pub enum TokenError {
 }
 
 impl TokenError {
-    pub fn new_invalid_char(ch: char, at: usize, source: String) -> TokenError {
+    pub fn new_invalid_char(at: usize, source: &str) -> TokenError {
         let filler = String::from_utf8(vec![b' '; at]).unwrap();
 
         let mut s = String::new();
@@ -33,7 +33,7 @@ impl fmt::Display for TokenError {
 impl error::Error for TokenError {
     fn description(&self) -> &str {
         match *self {
-            TokenError::InvalidChar(ref message) => "Invalid token found.",
+            TokenError::InvalidChar(_) => "Invalid token found.",
         }
     }
 

@@ -17,7 +17,7 @@ pub enum Expression {
 
 pub fn parse_expr(str: &str) -> Result<Expression> {
 
-    let tokens = token::parse_token(str);
+    let tokens = token::parse_token(str)?;
 
     println!("Tokens: {:?}", tokens);
 

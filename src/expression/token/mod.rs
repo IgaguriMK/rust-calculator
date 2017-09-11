@@ -3,6 +3,7 @@ pub mod error;
 use regex::Regex;
 use std::vec::Vec;
 
+use expression::token::error::TokenError;
 use expression::token::error::TokenResult;
 
 #[derive(Debug, PartialEq)]
@@ -25,7 +26,7 @@ lazy_static! {
     };
 }
 
-pub fn parse_token(str: &str) -> Vec<Token> {
+pub fn parse_token(str: &str) -> TokenResult<Vec<Token>> {
     let mut tokens: Vec<Token> = Vec::new();
     let mut str_left = str;
     let mut pos = 0;
@@ -34,7 +35,7 @@ pub fn parse_token(str: &str) -> Vec<Token> {
         str_left = str_left.trim();
 
         if str_left == "" {
-            return tokens;
+            return Ok(tokens);
         }
 
         if let Some(mat) = REG_NUMBER.find(str_left) {
@@ -61,12 +62,9 @@ pub fn parse_token(str: &str) -> Vec<Token> {
             str_left = str_tail_at(str_left, mat.end());
 
         } else {
-            let filler = String::from_utf8(vec![b' '; pos]).unwrap();
-
-            println!("\nParse error occer!");
-            println!("Input: \"{}\"", str);
-            println!("        {}^ Invalid token here", filler);
-            panic!("Invalid token");
+            return Err(
+                    TokenError::new_invalid_char(pos, str)
+                );
         }
     }
 }
@@ -87,36 +85,52 @@ mod tests {
     #[test]
     fn parse_token_number_1() {
         let tokens = parse_token("1");
+        
+        let tokens = tokens.expect("Test returns Err().");
         assert_eq!(tokens, vec![Token::Number(1)]);
     }
 
     #[test]
     fn parse_token_number_max() {
         let tokens = parse_token("9223372036854775807");
+        
+        let tokens = tokens.expect("Test returns Err().");
         assert_eq!(tokens, vec![Token::Number(9223372036854775807)]);
     }
 
     #[test]
     fn parse_token_add() {
         let tokens = parse_token("+");
+        
+        let tokens = tokens.expect("Test returns Err().");
         assert_eq!(tokens, vec![Token::Plus]);
     }
 
     #[test]
-    #[should_panic(expected = "Invalid token")]
     fn parse_token_invalid() {
-        parse_token("?");
+        let result = parse_token("?");
+        
+        let err = result.expect_err("This test should be return error.");
+
+        match err {
+            TokenError::InvalidChar(_) => (),
+            // e => panic!("Unexpected error in test:\n{:?}", e),
+        }
     }
 
     #[test]
     fn parse_token_add_expr() {
         let tokens = parse_token("1+2");
+        
+        let tokens = tokens.expect("Test returns Err().");
         assert_eq!(tokens, vec![Token::Number(1), Token::Plus, Token::Number(2)]);
     }
 
     #[test]
     fn parse_token_with_spaces() {
         let tokens = parse_token(" 1  + 2 ");
+        
+        let tokens = tokens.expect("Test returns Err().");
         assert_eq!(tokens, vec![Token::Number(1), Token::Plus, Token::Number(2)]);
     }
 
