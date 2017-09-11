@@ -18,6 +18,12 @@ impl TokenError {
         s = s + &format!("    {}^ Invalid token here\n", filler);
         TokenError::InvalidChar(s)
     }
+
+    pub fn get_message(&self) -> &str{
+        match *self {
+            TokenError::InvalidChar(ref message) => message,
+        }
+    }
 }
 
 pub type TokenResult<T> = result::Result<T, TokenError>;

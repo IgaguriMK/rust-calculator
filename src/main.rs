@@ -8,12 +8,16 @@ mod expression;
 use std::io;
 use std::io::Write;
 
+use error::CalcError;
 use error::Result;
 
 fn main() {
     match calc_expr() {
         Ok(()) => (),
-        Err(err) => println!("Error: {}", err),
+        Err(CalcError::Token(token_err)) => {
+            println!("{}", token_err.get_message());
+        },
+        Err(err) => println!("Internal error: {}", err),
     }
 }
 
@@ -24,7 +28,7 @@ fn calc_expr() -> Result<()> {
     let mut line = read_line()?;
     line.pop();
 
-    let expr = expression::parse_expr(&line);
+    let expr = expression::parse_expr(&line)?;
 
     println!("bytes:{:?}", expr);
 
