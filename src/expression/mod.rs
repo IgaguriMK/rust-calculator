@@ -48,11 +48,12 @@ pub fn shunting_yard(mut tokens: Vec<Token>) -> ParseResult<Vec<Token>> {
         if let Some(token) = tokens.pop() {
             match token {
                 t @ Token::Number(_) => output.push(t),
-                t @ Token::Plus     => pop_operators(t, &mut output, &mut stack)?,
-                t @ Token::Hyphen   => pop_operators(t, &mut output, &mut stack)?,
-                t @ Token::Asterisk => pop_operators(t, &mut output, &mut stack)?,
-                t @ Token::Slash    => pop_operators(t, &mut output, &mut stack)?,
-                t @ Token::Percent  => pop_operators(t, &mut output, &mut stack)?,
+                t @ Token::Plus     => pop_ops(t, &mut output, &mut stack)?,
+                t @ Token::Hyphen   => pop_ops(t, &mut output, &mut stack)?,
+                t @ Token::Asterisk => pop_ops(t, &mut output, &mut stack)?,
+                t @ Token::Slash    => pop_ops(t, &mut output, &mut stack)?,
+                t @ Token::Percent  => pop_ops(t, &mut output, &mut stack)?,
+                t @ Token::Hat      => pop_ops(t, &mut output, &mut stack)?,
                 t @ Token::OpenParen => stack.push(t),
                 Token::CloseParen => {
                         loop {
@@ -78,7 +79,7 @@ pub fn shunting_yard(mut tokens: Vec<Token>) -> ParseResult<Vec<Token>> {
 }
 
 
-fn pop_operators(current_token: Token, output: &mut Vec<Token>, stack: &mut Vec<Token>) -> ParseResult<()> {
+fn pop_ops(current_token: Token, output: &mut Vec<Token>, stack: &mut Vec<Token>) -> ParseResult<()> {
     let is_left = current_token.associativity().unwrap() == Associativity::Left;
     let priority = current_token.priority().unwrap();
 

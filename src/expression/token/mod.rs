@@ -14,6 +14,7 @@ pub enum Token {
     Asterisk,
     Slash,
     Percent,
+    Hat,
     OpenParen,
     CloseParen,
 }
@@ -35,11 +36,12 @@ pub enum Associativity {
 impl Token { 
     pub fn priority(&self) -> Option<u8> {
         match *self {
-            Token::Plus => Some(1),
-            Token::Hyphen => Some(1),
+            Token::Plus     => Some(1),
+            Token::Hyphen   => Some(1),
             Token::Asterisk => Some(3),
-            Token::Hyphen => Some(3),
-            Token::Percent => Some(2),
+            Token::Hyphen   => Some(3),
+            Token::Percent  => Some(2),
+            Token::Hat      => Some(4),
             _ => None,
         }
     }
@@ -52,6 +54,7 @@ impl Token {
             Token::Asterisk   => TokenType::Operator,
             Token::Slash      => TokenType::Operator,
             Token::Percent    => TokenType::Operator,
+            Token::Hat        => TokenType::Operator,
             Token::OpenParen  => TokenType::Paren,
             Token::CloseParen => TokenType::Paren,
         }
@@ -65,6 +68,7 @@ impl Token {
             Token::Asterisk   => Some(Associativity::Left),
             Token::Slash      => Some(Associativity::Left),
             Token::Percent    => Some(Associativity::Left),
+            Token::Hat        => Some(Associativity::Right),
             Token::OpenParen  => None,
             Token::CloseParen => None,
         }
@@ -103,6 +107,10 @@ lazy_static! {
 
     static ref REG_MOD: Regex = {
         Regex::new(r"^%").unwrap()
+    };
+
+    static ref REG_HAT: Regex = {
+        Regex::new(r"^\^").unwrap()
     };
 
     static ref REG_OPEN_PAREN: Regex = {
@@ -183,6 +191,14 @@ pub fn parse_token(str: &str) -> TokenResult<Vec<Token>> {
             pos += mat_str.len();
 
             tokens.push(Token::Percent);
+
+            str_left = str_tail_at(str_left, mat.end());
+            
+        } else if let Some(mat) = REG_HAT.find(str_left) {
+            let mat_str = mat.as_str();
+            pos += mat_str.len();
+
+            tokens.push(Token::Hat);
 
             str_left = str_tail_at(str_left, mat.end());
             
