@@ -128,4 +128,62 @@ mod test {
                     Token::Number(1),
                 ]);
     }
+
+    #[test]
+    fn shunting_yard_add() {
+        let result = shunting_yard(
+                vec![
+                    Token::Number(1),
+                    Token::Plus,
+                    Token::Number(2),
+                ]);
+
+        let tokens = result.expect("Test returns Err().");
+        assert_eq!(tokens, 
+                vec![
+                    Token::Number(1),
+                    Token::Number(2),
+                    Token::Plus,
+                ]);
+    }
+
+    #[test]
+    fn shunting_yard_add_mul_pow() {
+        let result = shunting_yard(
+                vec![
+                    Token::Number(1),
+                    Token::Plus,
+                    Token::Number(2),
+                    Token::Asterisk,
+                    Token::Number(3),
+                    Token::Hat,
+                    Token::Number(4),
+                ]);
+
+        let tokens = result.expect("Test returns Err().");
+        assert_eq!(tokens, 
+                vec![
+                    Token::Number(1),
+                    Token::Number(2),
+                    Token::Number(3),
+                    Token::Number(4),
+                    Token::Hat,
+                    Token::Asterisk,
+                    Token::Plus,
+                ]);
+    }
+//
+//    #[test]
+//    fn shunting_yard_() {
+//        let result = shunting_yard(
+//                vec![
+//                    Token::Number(1),
+//                ]);
+//
+//        let tokens = result.expect("Test returns Err().");
+//        assert_eq!(tokens, 
+//                vec![
+//                    Token::Number(1),
+//                ]);
+//    }
 }
