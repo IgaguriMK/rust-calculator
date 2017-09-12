@@ -108,6 +108,8 @@ fn pop_ops(current_token: Token, output: &mut Vec<Token>, stack: &mut Vec<Token>
 
 #[cfg(test)]
 mod test {
+    use super::*;
+
     //// parse_expr ////
     
     
@@ -123,7 +125,7 @@ mod test {
         let tokens = result.expect("Test returns Err().");
         assert_eq!(tokens, 
                 vec![
-                    Token::Number(1);
+                    Token::Number(1),
                 ]);
     }
 }
