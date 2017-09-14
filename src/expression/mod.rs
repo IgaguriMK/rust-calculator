@@ -11,12 +11,12 @@ use expression::token::TokenType;
 
 #[derive(Debug)]
 pub enum Expression {
-    Number(i64),
-    Add(Box<Expression>, Box<Expression>),
-    Sub(Box<Expression>, Box<Expression>),
-    Mult(Box<Expression>, Box<Expression>),
-    Div(Box<Expression>, Box<Expression>),
-    Mod(Box<Expression>, Box<Expression>),
+//    Number(i64),
+//    Add(Box<Expression>, Box<Expression>),
+//    Sub(Box<Expression>, Box<Expression>),
+//    Mult(Box<Expression>, Box<Expression>),
+//    Div(Box<Expression>, Box<Expression>),
+//    Mod(Box<Expression>, Box<Expression>),
     Dummy(String),
 }
 
