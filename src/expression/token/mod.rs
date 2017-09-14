@@ -31,7 +31,7 @@ impl Token {
             Token::Plus     => Some(1),
             Token::Hyphen   => Some(1),
             Token::Asterisk => Some(3),
-            Token::Hyphen   => Some(3),
+            Token::Slash    => Some(3),
             Token::Percent  => Some(2),
             Token::Hat      => Some(4),
             _ => None,
