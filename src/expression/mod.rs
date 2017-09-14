@@ -64,7 +64,6 @@ pub fn shunting_yard(mut tokens: Vec<Token>) -> ParseResult<Vec<Token>> {
                             }
                         }
                     },
-                _ => unimplemented!(),
             }
         } else {
             match stack.pop() {
@@ -74,8 +73,6 @@ pub fn shunting_yard(mut tokens: Vec<Token>) -> ParseResult<Vec<Token>> {
             }
         }
     }
-
-    panic!("Should not reach shunting_yard() end");
 }
 
 
