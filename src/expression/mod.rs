@@ -172,6 +172,30 @@ mod test {
                     Token::Plus,
                 ]);
     }
+
+    #[test]
+    fn shunting_yard_paren() {
+        let result = shunting_yard(
+                vec![
+                    Token::Number(1),
+                    Token::Asterisk,
+                    Token::OpenParen,
+                    Token::Number(2),
+                    Token::Plus,
+                    Token::Number(3),
+                    Token::CloseParen
+                ]);
+
+        let tokens = result.expect("Test returns Err().");
+        assert_eq!(tokens, 
+                vec![
+                    Token::Number(1),
+                    Token::Number(2),
+                    Token::Number(3),
+                    Token::Plus,
+                    Token::Asterisk,
+                ]);
+    }
 //
 //    #[test]
 //    fn shunting_yard_() {
