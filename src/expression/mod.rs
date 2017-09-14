@@ -2,6 +2,7 @@ pub mod error;
 pub mod token;
 mod shunting_yard;
 
+use error::CalcError;
 use error::Result;
 use expression::error::ParseError;
 use expression::error::ParseResult;
@@ -38,6 +39,11 @@ pub fn parse_expr(str: &str) -> Result<Expression> {
     let tokens = token::parse_token(str)?;
     let mut tokens = shunting_yard(tokens)?;
     let expression = build_expression_tree(&mut tokens)?;
+
+    if ! tokens.is_empty() {
+        let message = format!("トークンが多すぎます。");
+        return Err(CalcError::Parse(ParseError::TooMuchToken(message)));
+    }
 
     println!("Expression: {:?}", expression);
 

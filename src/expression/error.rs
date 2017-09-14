@@ -5,7 +5,8 @@ use std::result;
 #[derive(Debug)]
 pub enum ParseError {
     MismatchParen(String),
-    NoToken(String)
+    NoToken(String),
+    TooMuchToken(String),
 }
 
 impl ParseError {
@@ -17,10 +18,15 @@ impl ParseError {
         ParseError::NoToken(String::from(message))
     }
 
+    pub fn new_too_much_token_error(message: &str) -> ParseError {
+        ParseError::TooMuchToken(String::from(message))
+    }
+
     pub fn get_message(&self) -> &str {
         match *self {
             ParseError::MismatchParen(ref message) => message,
             ParseError::NoToken(ref message) => message,
+            ParseError::TooMuchToken(ref message) => message,
         }
     }
 }
@@ -32,6 +38,7 @@ impl fmt::Display for ParseError {
         match *self {
             ParseError::MismatchParen(ref message) => write!(f, "{}", message),
             ParseError::NoToken(ref message) => write!(f, "{}", message),
+            ParseError::TooMuchToken(ref message) => write!(f, "{}", message),
         }
     }
 }
@@ -42,6 +49,7 @@ impl error::Error for ParseError {
         match *self {
             ParseError::MismatchParen(_) => "Paren mismatch.",
             ParseError::NoToken(_) => "Tokens end while parse",
+            ParseError::TooMuchToken(_) => "Too much token",
         }
     }
 
