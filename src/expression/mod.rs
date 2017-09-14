@@ -6,7 +6,6 @@ use expression::error::ParseError;
 use expression::error::ParseResult;
 use expression::token::Associativity;
 use expression::token::Token;
-use expression::token::TokenType;
 
 
 #[derive(Debug)]

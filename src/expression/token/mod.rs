@@ -20,13 +20,6 @@ pub enum Token {
 }
 
 #[derive(Debug, PartialEq)]
-pub enum TokenType {
-    Number,
-    Operator,
-    Paren,
-}
-
-#[derive(Debug, PartialEq)]
 pub enum Associativity {
     Left,
     Right,
@@ -42,20 +35,6 @@ impl Token {
             Token::Percent  => Some(2),
             Token::Hat      => Some(4),
             _ => None,
-        }
-    }
-
-    pub fn token_type(&self) -> TokenType {
-        match *self {
-            Token::Number(_)  => TokenType::Number,
-            Token::Plus       => TokenType::Operator,
-            Token::Hyphen     => TokenType::Operator,
-            Token::Asterisk   => TokenType::Operator,
-            Token::Slash      => TokenType::Operator,
-            Token::Percent    => TokenType::Operator,
-            Token::Hat        => TokenType::Operator,
-            Token::OpenParen  => TokenType::Paren,
-            Token::CloseParen => TokenType::Paren,
         }
     }
 
