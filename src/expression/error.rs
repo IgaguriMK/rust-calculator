@@ -5,7 +5,7 @@ use std::result;
 #[derive(Debug)]
 pub enum ParseError {
     MismatchParen(String),
-    Other(String),
+    NoToken(String)
 }
 
 impl ParseError {
@@ -13,14 +13,14 @@ impl ParseError {
         ParseError::MismatchParen(String::from(message))
     }
 
-    pub fn new_other_error(message: &str) -> ParseError {
-        ParseError::Other(String::from(message))
+    pub fn new_no_token_error(message: &str) -> ParseError {
+        ParseError::NoToken(String::from(message))
     }
 
     pub fn get_message(&self) -> &str {
         match *self {
             ParseError::MismatchParen(ref message) => message,
-            ParseError::Other(ref message) => message,
+            ParseError::NoToken(ref message) => message,
         }
     }
 }
@@ -31,7 +31,7 @@ impl fmt::Display for ParseError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
             ParseError::MismatchParen(ref message) => write!(f, "{}", message),
-            ParseError::Other(ref message) => write!(f, "{}", message),
+            ParseError::NoToken(ref message) => write!(f, "{}", message),
         }
     }
 }
@@ -41,7 +41,7 @@ impl error::Error for ParseError {
     fn description(&self) -> &str {
         match *self {
             ParseError::MismatchParen(_) => "Paren mismatch.",
-            ParseError::Other(_) => "Unknown error.",
+            ParseError::NoToken(_) => "Tokens end while parse",
         }
     }
 

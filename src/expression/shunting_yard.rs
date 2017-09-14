@@ -12,11 +12,6 @@ pub fn shunting_yard(mut tokens: Vec<Token>) -> ParseResult<Vec<Token>> {
     let mut output = Vec::<Token>::with_capacity(size);
 
     loop {
-        println!("");
-        println!("Tokens: {:?}", tokens);
-        println!("Stack:  {:?}", stack);
-        println!("Output: {:?}", output);
-
         if let Some(token) = tokens.pop() {
             match token {
                 t @ Token::Number(_) => output.push(t),
