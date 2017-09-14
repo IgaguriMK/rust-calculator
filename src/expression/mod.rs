@@ -170,6 +170,32 @@ mod test {
     }
 
     #[test]
+    fn shunting_yard_sub_div_mod() {
+        let result = shunting_yard(
+                vec![
+                    Token::Number(1),
+                    Token::Hyphen,
+                    Token::Number(2),
+                    Token::Slash,
+                    Token::Number(3),
+                    Token::Percent,
+                    Token::Number(4),
+                ]);
+
+        let tokens = result.expect("Test returns Err().");
+        assert_eq!(tokens, 
+                vec![
+                    Token::Number(1),
+                    Token::Number(2),
+                    Token::Number(3),
+                    Token::Slash,
+                    Token::Number(4),
+                    Token::Percent,
+                    Token::Hyphen,
+                ]);
+    }
+
+    #[test]
     fn shunting_yard_paren() {
         let result = shunting_yard(
                 vec![
