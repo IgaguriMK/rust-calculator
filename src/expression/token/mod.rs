@@ -30,7 +30,6 @@ pub enum TokenType {
 pub enum Associativity {
     Left,
     Right,
-    Non,
 }
 
 impl Token { 
