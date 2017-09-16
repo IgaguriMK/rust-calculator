@@ -10,16 +10,25 @@ pub enum ParseError {
 }
 
 impl ParseError {
-    pub  fn new_mismatch_paren(message: &str) -> ParseError {
-        ParseError::MismatchParen(String::from(message))
+    pub fn mismatch_paren<S>(message: S) -> ParseError
+    where
+        S: Into<String>,
+    {
+        ParseError::MismatchParen(message.into())
     }
 
-    pub fn new_no_token_error(message: &str) -> ParseError {
-        ParseError::NoToken(String::from(message))
+    pub fn no_token<S>(message: S) -> ParseError
+    where
+        S: Into<String>,
+    {
+        ParseError::NoToken(message.into())
     }
 
-    pub fn new_too_much_token_error(message: &str) -> ParseError {
-        ParseError::TooMuchToken(String::from(message))
+    pub fn too_much_token<S>(message: S) -> ParseError
+    where
+        S: Into<String>,
+    {
+        ParseError::TooMuchToken(message.into())
     }
 
     pub fn get_message(&self) -> &str {

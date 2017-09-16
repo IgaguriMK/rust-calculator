@@ -23,19 +23,19 @@ pub fn shunting_yard(mut tokens: Vec<Token>) -> ParseResult<Vec<Token>> {
                 t @ Token::Hat      => pop_ops(t, &mut output, &mut stack)?,
                 t @ Token::OpenParen => stack.push(t),
                 Token::CloseParen => {
-                        loop {
-                            match stack.pop() {
-                                Some(Token::OpenParen) => break,
-                                Some(t) => output.push(t),
-                                None => return Err(ParseError::new_mismatch_paren("57")),
-                            }
+                    loop {
+                        match stack.pop() {
+                            Some(Token::OpenParen) => break,
+                            Some(t) => output.push(t),
+                            None => return Err(ParseError::mismatch_paren("57")),
                         }
-                    },
+                    }
+                }
             }
         } else {
             match stack.pop() {
                 None => return Ok(output),
-                Some(Token::OpenParen) => return Err(ParseError::new_mismatch_paren("66")),
+                Some(Token::OpenParen) => return Err(ParseError::mismatch_paren("66")),
                 Some(t) => output.push(t),
             }
         }

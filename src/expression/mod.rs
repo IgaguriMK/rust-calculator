@@ -40,9 +40,9 @@ pub fn parse_expr(str: &str) -> Result<Expression> {
     let mut tokens = shunting_yard(tokens)?;
     let expression = build_expression_tree(&mut tokens)?;
 
-    if ! tokens.is_empty() {
+    if !tokens.is_empty() {
         let message = format!("トークンが多すぎます。");
-        return Err(CalcError::Parse(ParseError::TooMuchToken(message)));
+        return Err(CalcError::Parse(ParseError::too_much_token(message)));
     }
 
     println!("Expression: {:?}", expression);
@@ -90,7 +90,9 @@ fn build_expression_tree(tokens: &mut Vec<Token>) -> ParseResult<Box<Expression>
         }
 
     } else {
-        return Err(ParseError::new_no_token_error("式の途中でトークンが無くなりました。"));
+        return Err(ParseError::no_token(
+            "式の途中でトークンが無くなりました。",
+        ));
     }
 }
 
