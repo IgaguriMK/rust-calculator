@@ -18,7 +18,7 @@ impl TokenError {
         TokenError::InvalidChar(s)
     }
 
-    pub fn get_message(&self) -> &str{
+    pub fn get_message(&self) -> &str {
         match *self {
             TokenError::InvalidChar(ref message) => message,
         }

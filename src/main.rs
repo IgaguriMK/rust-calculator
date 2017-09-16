@@ -16,7 +16,7 @@ fn main() {
         Ok(()) => (),
         Err(CalcError::Token(token_err)) => {
             println!("{}", token_err.get_message());
-        },
+        }
         Err(err) => println!("Internal error: {}", err),
     }
 }
