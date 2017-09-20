@@ -57,8 +57,6 @@ pub fn parse_expr(str: &str) -> Result<Expression> {
         return Err(CalcError::Parse(ParseError::too_much_token(message)));
     }
 
-    println!("Expression: {:?}", expression);
-
     Ok(*expression)
 }
 
