@@ -14,8 +14,11 @@ use error::Result;
 fn main() {
     match calc_expr() {
         Ok(()) => (),
-        Err(CalcError::Token(token_err)) => {
-            println!("{}", token_err.get_message());
+        Err(CalcError::Token(err)) => {
+            println!("{}", err.get_message());
+        }
+        Err(CalcError::Parse(err)) => {
+            println!("{}", err.get_message());
         }
         Err(err) => println!("Internal error: {}", err),
     }
