@@ -38,7 +38,7 @@ fn calc_expr() -> Result<()> {
     let expr = expression::parse_expr(&line)?;
     let result = execute::execute(expr)?;
 
-    println!("{}", result);
+    println!("= {}", result);
 
     Ok(())
 }
