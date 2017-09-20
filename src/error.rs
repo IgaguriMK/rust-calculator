@@ -5,12 +5,14 @@ use std::result;
 
 use expression::error::ParseError;
 use expression::token::error::TokenError;
+use execute::error::ExecuteError;
 
 #[derive(Debug)]
 pub enum CalcError {
     Io(io::Error),
     Token(TokenError),
     Parse(ParseError),
+    Execute(ExecuteError),
 }
 
 pub type Result<T> = result::Result<T, CalcError>;
@@ -21,6 +23,7 @@ impl fmt::Display for CalcError {
             CalcError::Io(ref err) => write!(f, "IO error:{}", err),
             CalcError::Token(ref err) => write!(f, "{}", err),
             CalcError::Parse(ref err) => write!(f, "{}", err),
+            CalcError::Execute(ref err) => write!(f, "{}", err),
         }
     }
 }
@@ -31,6 +34,7 @@ impl error::Error for CalcError {
             CalcError::Io(ref err) => err.description(),
             CalcError::Token(ref err) => err.description(),
             CalcError::Parse(ref err) => err.description(),
+            CalcError::Execute(ref err) => err.description(),
         }
     }
 
@@ -39,6 +43,7 @@ impl error::Error for CalcError {
             CalcError::Io(ref err) => Some(err),
             CalcError::Token(ref err) => Some(err),
             CalcError::Parse(ref err) => Some(err),
+            CalcError::Execute(ref err) => Some(err),
         }
     }
 }
@@ -58,5 +63,11 @@ impl From<TokenError> for CalcError {
 impl From<ParseError> for CalcError {
     fn from(err: ParseError) -> CalcError {
         CalcError::Parse(err)
+    }
+}
+
+impl From<ExecuteError> for CalcError {
+    fn from(err: ExecuteError) -> CalcError {
+        CalcError::Execute(err)
     }
 }

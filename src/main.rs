@@ -4,6 +4,7 @@ extern crate lazy_static;
 
 mod error;
 mod expression;
+mod execute;
 
 use std::io;
 use std::io::Write;
@@ -20,6 +21,9 @@ fn main() {
         Err(CalcError::Parse(err)) => {
             println!("{}", err.get_message());
         }
+        Err(CalcError::Execute(err)) => {
+            println!("{}", err.get_message());
+        }
         Err(err) => println!("Internal error: {}", err),
     }
 }
@@ -32,8 +36,9 @@ fn calc_expr() -> Result<()> {
     line.pop();
 
     let expr = expression::parse_expr(&line)?;
+    let result = execute::execute(expr)?;
 
-    println!("bytes:{:?}", expr);
+    println!("{}", result);
 
     Ok(())
 }
